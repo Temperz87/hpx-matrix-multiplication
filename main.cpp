@@ -30,7 +30,7 @@ void printMatrix(const vector<int>& matrix, int numRows, int numCols) {
 }
 
 vector<int> multiply(const vector<int>& a, const vector<int>& b, int n, int m, int p) {
-    vector<int> result(m * n, 0);
+    vector<int> result(n * p, 0);
     hpx::experimental::for_loop(hpx::execution::par, 0, n, [&](auto i) {
         hpx::experimental::for_loop(hpx::execution::par, 0, p, [&](auto j) {
             int idx = (i * n) + j;
@@ -54,28 +54,21 @@ int main() {
     // Get dimensions of matrix one
     cout << "How many rows will matrix one have?" << endl;
     cin >> matrixOneRows;
-    cout << "How many columns will matrix one have?" << endl;
+    cout << "How many columns will matrix one have?";
+    cout << "\n\tThis corresponds to how many rows matrix two has" << endl;
     cin >> matrixOneCols;
 
     // Get dimensions of matrix two
-    cout << "How many rows will matrix two have?" << endl;
-    cin >> matrixTwoRows;
+    matrixTwoRows = matrixOneCols;
     cout << "How many columns will matrix two have?" << endl;
     cin >> matrixTwoCols;
 
-    // Validate that we can multiply the matrices
-    // If so create flattened vectors
-    if (matrixOneCols != matrixTwoRows) {
-        cout << "The columns in matrix one must equal the columns in matrix two" << endl;
-        return 1;
-    }
-
-    vector<int> matrixOne(matrixOneCols * matrixOneRows);
-    vector<int> matrixTwo(matrixTwoCols * matrixTwoRows);
+    vector<int> matrixOne(matrixOneRows * matrixOneCols);
+    vector<int> matrixTwo(matrixTwoRows * matrixTwoCols);
 
     // Get values for matrix two
     cout << "Please enter all the values for matrix one newline separated, by column then by row." << endl;
-    for (int i = 0; i < matrixOneCols * matrixOneRows; i++) {
+    for (int i = 0; i < matrixOneRows * matrixOneCols; i++) {
         int userInput;
         cin >> userInput;
         matrixOne[i] = userInput;
@@ -93,6 +86,7 @@ int main() {
 
     printMatrix(matrixTwo, matrixTwoRows, matrixTwoCols);
 
+    // Multiply and print result
     vector<int> result = multiply(matrixOne, matrixTwo, matrixOneRows, matrixTwoRows, matrixTwoCols);
     printMatrix(result, matrixOneRows, matrixTwoCols);
 }
